@@ -1,0 +1,41 @@
+{{!-- <ul class="gallery">
+  {{#each hits}}
+  <li> <img style="width: 1280px;" class="noLoad" id="{{this.id}}" src="{{this.previewURL}}" alt="{{this.type}}"
+      data-origin="{{this.largeImageURL}}"></li>
+  {{!-- {{/each}} --}}
+{{!-- </ul> --}}
+{{!-- webformatURL - ссылка на маленькое изображение для списка карточек
+largeImageURL - ссылка на большое изображение (смотри пункт 'дополнительно')
+likes - количество лайков
+views - количество просмотров
+comments - количество комментариев
+downloads - количество загрузок --}}
+<ul class="gallery">
+  {{#each hits}}
+  <li>
+  <div class="photo-card" style="border-bottom:1px solid #000;">
+    <img style="width: 280px;" class="noLoad" id="{{this.id}}" src="{{this.webformatURL}}" alt="{{this.type}}"
+      data-origin="{{this.largeImageURL}}">
+    {{!-- <img src="{{this.webformatURL}}" alt="" /> --}}
+    <div class="stats">
+      <p class="stats-item">
+        <i class="material-icons">thumb_up</i>
+        {{this.likes}}
+      </p>
+      <p class="stats-item">
+        <i class="material-icons">visibility</i>
+        {{this.views}}
+      </p>
+      <p class="stats-item">
+        <i class="material-icons">comment</i>
+        {{this.comments}}
+      </p>
+      <p class="stats-item">
+        <i class="material-icons">cloud_download</i>
+        {{this.downloads}}
+      </p>
+    </div>
+  </div>
+  </li>
+  {{/each}}
+</ul>
