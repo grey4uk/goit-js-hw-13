@@ -1,24 +1,25 @@
 import './styles.css';
-import '../node_modules/pnotify/dist/PNotifyBrightTheme.css';
-import PNotify from '../node_modules/pnotify/dist/es/PNotify.js';
-import PNotifyButtons from '../node_modules/pnotify/dist/es/PNotifyButtons.js';
-import '../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff';
-import '../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2';
 import '../node_modules/material-design-icons/iconfont/material-icons.css';
 import '../node_modules/basiclightbox/dist/basicLightbox.min.css';
 import * as basicLightbox from '../node_modules/basiclightbox/dist/basicLightbox.min.js';
+import debounce from '../node_modules/lodash/debounce.js';
 
 import inputForm from './templates/form.hbs';
 import pixiApi from './apiService.js';
 import listPhoto from './templates/list-item-template.hbs';
-import gsap from 'gsap';
-import ScrollToPlugin from 'gsap/ScrollToPlugin';
-gsap.registerPlugin(ScrollToPlugin);
-let currentPage = 0;
+import 'pnotify/dist/PNotifyBrightTheme.css';
+import PNotify from 'pnotify/dist/es/PNotify';
+import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons.js';
+
+const classDiv = document.querySelector('#div-section');
+classDiv.insertAdjacentHTML('afterbegin', '<ul class="gallery" style="display:flex;flex-wrap:wrap;width:100vw;"></ul>');
+const classDivList = classDiv.querySelector('.gallery');
+let currentPage = 1;
 let listImage;
+
 function parseData(data) {
   const rez = listPhoto(data);
-  classDiv.innerHTML += rez;
+  classDivList.insertAdjacentHTML('beforeend', rez);
   classBtn.removeAttribute('disabled');
   listImage = Array.from(document.querySelectorAll('.noLoad'));
   listImage.forEach((elem, index) => {
@@ -31,12 +32,12 @@ function parseData(data) {
   listImage.forEach(elem => {
     pageObserver.observe(elem);
   });
+  console.log(currentPage);
 }
 const onPageObserver = (entries, observer) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       const cPage = Number(entry.target.dataset.pageIndex) - 1;
-    //   console.log('Page:', cPage);
     }
   });
 };
@@ -44,19 +45,37 @@ const pageObserver = new IntersectionObserver(onPageObserver, {
   rootMargin: '50px',
   threshold: 0,
 });
-const classDiv = document.querySelector('#div-section');
+
 const classBtn = document.querySelector('#btn-load-more');
 classDiv.insertAdjacentHTML('afterend', inputForm());
-const searchForm = document.querySelector('#search-form');
+const searchForm = document.querySelector('input');
+searchForm.addEventListener('keydown', onEnterClick);
 
-classBtn.addEventListener('click', onClickBtn);
-function onClickBtn(event) {
-  classBtn.setAttribute('disabled', true);
-  pixiApi(searchForm.querySelector('input').value, ++currentPage, parseData);
+function onEnterClick(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    currentPage = 0;
+    runBuildResult();
+  }
 }
 
-if(searchForm.querySelector('input').value){pixiApi(searchForm.querySelector('input').value, ++currentPage, parseData);}
+classBtn.addEventListener('click', onClickBtn);
 
+function onClickBtn(event) {
+  classBtn.setAttribute('disabled', true);
+  runBuildResult();
+}
+
+function runBuildResult() {
+  if (!searchForm.value) {
+    PNotify.alert('Empty input, choose target)');
+    return;
+  } else {
+    PNotify.closeAll();
+    pixiApi(searchForm.value, ++currentPage, parseData);    
+  }
+  
+}
 
 const options = {
   rootMargin: '50px',
@@ -73,7 +92,6 @@ const onEntry = (entries, observer1) => {
 };
 const observer1 = new IntersectionObserver(onEntry, options);
 
-
 classDiv.addEventListener('click', onImgClick);
 function onImgClick(e) {
   if (e.target.dataset.origin) {
@@ -82,6 +100,4 @@ function onImgClick(e) {
 `);
     instance.show();
   }
-  
 }
-window.scrollTo(classBtn);

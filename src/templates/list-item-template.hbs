@@ -10,10 +10,10 @@ likes - количество лайков
 views - количество просмотров
 comments - количество комментариев
 downloads - количество загрузок --}}
-<ul class="gallery">
+
   {{#each hits}}
   <li>
-  <div class="photo-card" style="border-bottom:1px solid #000;">
+  <div class="photo-card" style="border:1px solid #000;">
     <img style="width: 280px;" class="noLoad" id="{{this.id}}" src="{{this.webformatURL}}" alt="{{this.type}}"
       data-origin="{{this.largeImageURL}}">
     {{!-- <img src="{{this.webformatURL}}" alt="" /> --}}
@@ -38,4 +38,3 @@ downloads - количество загрузок --}}
   </div>
   </li>
   {{/each}}
-</ul>
