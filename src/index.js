@@ -52,11 +52,17 @@ const classBtn = document.querySelector('#btn-load-more');
 classDiv.insertAdjacentHTML('beforebegin', inputForm());
 const searchForm = document.querySelector('#search-form');
 searchForm.addEventListener('submit', onEnterClick);
-const searchBtn=document.querySelector('#search-button');
-searchBtn.addEventListener('click',onEnterClick);
+const searchBtn = document.querySelector('#search-button');
+searchBtn.addEventListener('click', onEnterClick);
+const scrollTopBtn = document.querySelector('#scroll-to-top');
+scrollTopBtn.addEventListener('click', scrollTopBtnClick);
+
+function scrollTopBtnClick(e) {
+  window.scrollTo(0,document.innerHeight);
+}
 
 function onEnterClick(e) {
-  classDivList.innerHTML='';
+  classDivList.innerHTML = '';
   e.preventDefault();
   currentPage = 0;
   runBuildResult();
