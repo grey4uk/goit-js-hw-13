@@ -12,7 +12,10 @@ import PNotify from 'pnotify/dist/es/PNotify';
 import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons.js';
 
 const classDiv = document.querySelector('#div-section');
-classDiv.insertAdjacentHTML('afterbegin', '<ul class="gallery" style="display:flex;flex-wrap:wrap;width:100vw;"></ul>');
+classDiv.insertAdjacentHTML(
+  'afterbegin',
+  '<ul class="gallery" style="display:flex;flex-wrap:wrap;width:100vw; list-style: none;"></ul>',
+);
 const classDivList = classDiv.querySelector('.gallery');
 let currentPage = 1;
 let listImage;
@@ -32,7 +35,6 @@ function parseData(data) {
   listImage.forEach(elem => {
     pageObserver.observe(elem);
   });
-  console.log(currentPage);
 }
 const onPageObserver = (entries, observer) => {
   entries.forEach(entry => {
@@ -47,16 +49,17 @@ const pageObserver = new IntersectionObserver(onPageObserver, {
 });
 
 const classBtn = document.querySelector('#btn-load-more');
-classDiv.insertAdjacentHTML('afterend', inputForm());
-const searchForm = document.querySelector('input');
-searchForm.addEventListener('keydown', onEnterClick);
+classDiv.insertAdjacentHTML('beforebegin', inputForm());
+const searchForm = document.querySelector('#search-form');
+searchForm.addEventListener('submit', onEnterClick);
+const searchBtn=document.querySelector('#search-button');
+searchBtn.addEventListener('click',onEnterClick);
 
 function onEnterClick(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    currentPage = 0;
-    runBuildResult();
-  }
+  classDivList.innerHTML='';
+  e.preventDefault();
+  currentPage = 0;
+  runBuildResult();
 }
 
 classBtn.addEventListener('click', onClickBtn);
@@ -67,14 +70,13 @@ function onClickBtn(event) {
 }
 
 function runBuildResult() {
-  if (!searchForm.value) {
+  if (!searchForm.querySelector('input').value) {
     PNotify.alert('Empty input, choose target)');
     return;
   } else {
     PNotify.closeAll();
-    pixiApi(searchForm.value, ++currentPage, parseData);    
+    pixiApi(searchForm.querySelector('input').value, ++currentPage, parseData);
   }
-  
 }
 
 const options = {
